@@ -1,0 +1,17 @@
+app:
+  yandex-api-url: "https://translate.api.cloud.yandex.net/translate/v2/translate"
+  api-token: ${API_TOKEN}
+  folder-id: ${FOLDER_ID}
+
+spring:
+  liquibase:
+    enabled: false
+  datasource:
+    hikari:
+      username: postgres
+      password: postgres
+      jdbc-url: jdbc:postgresql://localhost:5432/requests
+      driver-class-name: org.postgresql.Driver
+
+server:
+  port: 8080
