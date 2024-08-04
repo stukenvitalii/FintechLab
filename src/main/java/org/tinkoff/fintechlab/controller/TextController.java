@@ -51,7 +51,7 @@ public class TextController {
         logger.info("Язык перевода: {}", targetLanguage);
         logger.info("Текст для перевода: {}", text);
 
-        String translatedText = translateController.translate(sourceLanguage, targetLanguage, text); //TODO добавить преобразование языков
+        String translatedText = translateController.translate(sourceLanguage, targetLanguage, text);
 
         model.addAttribute("sourceText", text);
         model.addAttribute("translatedText", translatedText);
