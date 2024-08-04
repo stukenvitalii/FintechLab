@@ -7,29 +7,29 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5 d-flex justify-content-center align-items-center flex-column">
     <h1 class="text-center">Переводчик</h1>
-    <div class="card">
+    <div class="card w-50">
         <div class="card-body">
             <form id="translator-form" method="get" action="/translated">
                 <div class="form-group">
                     <label for="sourceLanguage">Исходный язык</label>
                     <select class="form-control" id="sourceLanguage" name="sourceLanguage">
-                        <option>Русский</option>
-                        <option>Английский</option>
-                        <option>Испанский</option>
-                        <option>Немецкий</option>
-                        <option>Французский</option>
+                        <option th:each="lang : ${languages}"
+                                th:text="${lang.getLanguage()}"
+                                th:value="${lang.getCode()}"
+                                th:selected="${lang.name() == 'RUSSIAN'}">
+                        </option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="targetLanguage">Язык перевода</label>
                     <select class="form-control" id="targetLanguage" name="targetLanguage">
-                        <option>Английский</option>
-                        <option>Русский</option>
-                        <option>Испанский</option>
-                        <option>Немецкий</option>
-                        <option>Французский</option>
+                        <option th:each="lang : ${languages}"
+                                th:text="${lang.getLanguage()}"
+                                th:value="${lang.getCode()}"
+                                th:selected="${lang.name() == 'ENGLISH'}">
+                        </option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -40,9 +40,9 @@
             </form>
         </div>
     </div>
-    <div class="mt-4">
-        <h3>Переведенный текст</h3>
-        <div id="translatedText" class="border p-3" th:text="${translatedText}"></div>
+    <div class="mt-4 w-50">
+        <h3 class="d-flex justify-content-center align-items-center">Переведенный текст</h3>
+        <div id="translatedText" class="border p-3 " th:text="${translatedText}"></div>
     </div>
 </div>
 </body>
