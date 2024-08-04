@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class TextController {
-    @Autowired
-    private TranslateController translateController;
+    private final TranslateController translateController;
+
+    public TextController(TranslateController translateController) {
+        this.translateController = translateController;
+    }
 
     @RequestMapping("/")
     public String home(Model m) {
