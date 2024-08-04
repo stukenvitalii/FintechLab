@@ -25,7 +25,6 @@ public class TranslateController {
     private final RestTemplate restTemplate = new RestTemplate();
     private static final Logger logger = LoggerFactory.getLogger(TranslateController.class.getName());
 
-
     public String translate(String sourceLanguage, String targetLanguage, String text) throws JSONException {
         JSONObject requestParams = new JSONObject();
         requestParams.put("folderId", FOLDER_ID);
