@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.tinkoff.fintechlab.controller.TextController;
 import org.tinkoff.fintechlab.dto.Request;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
