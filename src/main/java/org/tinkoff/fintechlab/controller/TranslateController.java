@@ -2,7 +2,8 @@ package org.tinkoff.fintechlab.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -16,12 +17,14 @@ public class TranslateController {
     private String API_URL;
 
     @Value("${app.api-token}")
-    private String API_KEY; // Укажите ваш API ключ
+    private String API_KEY;
 
     @Value("${app.folder-id}")
-    private String FOLDER_ID; // Укажите ваш folderId
+    private String FOLDER_ID;
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private static final Logger logger = LoggerFactory.getLogger(TranslateController.class.getName());
+
 
     public String translate(String sourceLanguage, String targetLanguage, String text) throws JSONException {
         JSONObject requestParams = new JSONObject();
@@ -44,9 +47,11 @@ public class TranslateController {
                 JsonNode root = objectMapper.readTree(response.getBody());
                 return root.path("translations").get(0).path("text").asText();
             } catch (Exception e) {
+                logger.error(e.getMessage());
                 throw new RuntimeException("Failed to parse translation response", e);
             }
         } else {
+            logger.error("Translation request failed: " + response.getStatusCode());
             throw new RuntimeException("Translation request failed: " + response.getStatusCode());
         }
     }
