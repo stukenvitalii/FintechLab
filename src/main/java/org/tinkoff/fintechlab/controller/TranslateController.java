@@ -10,6 +10,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
+import org.tinkoff.fintechlab.exception.ClientException;
 
 @Controller
 public class TranslateController {
@@ -25,7 +26,7 @@ public class TranslateController {
     private final RestTemplate restTemplate = new RestTemplate();
     private static final Logger logger = LoggerFactory.getLogger(TranslateController.class.getName());
 
-    public String translate(String sourceLanguage, String targetLanguage, String text) throws JSONException {
+    public String translate(String sourceLanguage, String targetLanguage, String text) throws JSONException, ClientException, RuntimeException {
         JSONObject requestParams = new JSONObject();
         requestParams.put("folderId", FOLDER_ID);
         requestParams.put("sourceLanguageCode", sourceLanguage);
@@ -51,7 +52,7 @@ public class TranslateController {
             }
         } else {
             logger.error("Translation request failed: " + response.getStatusCode());
-            throw new RuntimeException("Translation request failed: " + response.getStatusCode());
+            throw new ClientException("Translation request failed", response.getStatusCode().value());
         }
     }
 
