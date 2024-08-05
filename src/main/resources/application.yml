@@ -4,6 +4,8 @@ app:
   folder-id: ${FOLDER_ID}
 
 spring:
+  application:
+    name: fintech-lab
   liquibase:
     enabled: false
   datasource:
