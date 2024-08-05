@@ -1,14 +1,14 @@
 package org.tinkoff.fintechlab.service;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.tinkoff.fintechlab.dto.Request;
-import org.tinkoff.fintechlab.service.RequestService;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @ExtendWith(MockitoExtension.class)
 public class RequestServiceTest {
