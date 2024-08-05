@@ -1,4 +1,4 @@
-package org.tinkoff.fintechlab;
+package org.tinkoff.fintechlab.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
