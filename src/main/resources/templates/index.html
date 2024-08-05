@@ -44,6 +44,10 @@
         <h3 class="d-flex justify-content-center align-items-center">Переведенный текст</h3>
         <div id="translatedText" class="border p-3 " th:text="${translatedText}"></div>
     </div>
+    <div class="mt-4 w-50">
+        <h3 class="d-flex justify-content-center align-items-center text-danger" th:if="${errorMessage}">Ошибка</h3>
+        <div class="border p-3 text-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    </div>
 </div>
 </body>
 </html>
