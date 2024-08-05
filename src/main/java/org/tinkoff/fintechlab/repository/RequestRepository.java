@@ -18,12 +18,11 @@ public class RequestRepository {
 
 
     @Transactional
-    public void add(Request request) throws UnknownHostException {
+    public void add(Request request) {
         String sql =
                 "INSERT INTO requests (ip_address, input_text, translated_text) VALUES (:ip_address,:input_text,:translated_text)";
 
-//        var inetAddress = InetAddress.getByName("192.168.1.1");
-        var inetAddress = InetAddress.getLocalHost().toString();
+        var inetAddress = request.getIpAddress().toString();
         logger.info("This is IP: " + inetAddress);
         jdbcClient.sql(sql)
                 .param("ip_address", inetAddress)
