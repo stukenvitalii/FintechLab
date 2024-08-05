@@ -50,7 +50,19 @@ public class TextController {
         logger.info("Язык перевода: {}", targetLanguage);
         logger.info("Текст для перевода: {}", text);
 
-        String translatedText = translateController.translate(sourceLanguage, targetLanguage, text);
+        String translatedText = "";
+        try {
+            translatedText = getTranslatedTextWithMultithreading(sourceLanguage, targetLanguage, text);
+        } catch (ClientException e) {
+            logger.error("Ошибка при переводе текста", e);
+            model.addAttribute("errorMessage", "Произошла ошибка при переводе текста. Пожалуйста, попробуйте позже.");
+        } catch (RuntimeException e) {
+            logger.error("Ошибка при парсинге ответа сервера");
+            model.addAttribute("errorMessage", "Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.");
+        } catch (Exception e) {
+            logger.error("Общая ошибка", e);
+            model.addAttribute("errorMessage", "Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.");
+        }
 
         requestService.add(new Request(clientIp, text, translatedText));
         logger.info("Saved to DB");
