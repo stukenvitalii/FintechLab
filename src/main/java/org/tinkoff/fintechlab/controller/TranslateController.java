@@ -1,16 +1,17 @@
 package org.tinkoff.fintechlab.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
-import org.tinkoff.fintechlab.exception.ClientException;
+import org.tinkoff.fintechlab.dto.TranslateResponse;
+import org.tinkoff.fintechlab.dto.TranslatedWord;
+
+import java.util.stream.Collectors;
 
 @Controller
 public class TranslateController {
@@ -24,9 +25,8 @@ public class TranslateController {
     private String FOLDER_ID;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final Logger logger = LoggerFactory.getLogger(TranslateController.class.getName());
 
-    public String translate(String sourceLanguage, String targetLanguage, String text) throws JSONException, ClientException, RuntimeException {
+    public String translate(String sourceLanguage, String targetLanguage, String text) throws JSONException, RuntimeException {
         JSONObject requestParams = new JSONObject();
         requestParams.put("folderId", FOLDER_ID);
         requestParams.put("sourceLanguageCode", sourceLanguage);
@@ -39,21 +39,12 @@ public class TranslateController {
 
         HttpEntity<String> entity = new HttpEntity<>(requestParams.toString(), headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
+        TranslateResponse translatedText =
+                restTemplate.postForObject(API_URL, entity, TranslateResponse.class);
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode root = objectMapper.readTree(response.getBody());
-                return root.path("translations").get(0).path("text").asText();
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                throw new RuntimeException("Failed to parse translation response", e);
-            }
-        } else {
-            logger.error("Translation request failed: " + response.getStatusCode());
-            throw new ClientException("Translation request failed", response.getStatusCode().value());
-        }
+        return translatedText.getTranslations().stream()
+                .map(TranslatedWord::getText)
+                .collect(Collectors.joining(" "));
     }
 
 
