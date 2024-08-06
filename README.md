@@ -67,11 +67,50 @@ cd путь_к_директории_проекта
 mvn clean install
 ```
 
-### 5. Запустите Spring Boot приложение
+### 5. Установите интерфейс командной строки для YandexCloud
+Сначала нужно установить интерфейс YandexCloud для командной строки и настроить его. Вся необходимая информация находится по ссылке: https://yandex.cloud/ru/docs/cli/quickstart#install
+
+### 6. Получите API-токен
+
+После установки интерфейса выполните команду
+```bash
+yc iam create-token
+```
+Полученный API-токен вставьте в переменную окружения в параметрах запуска с именем API_TOKEN
+
+---
+Больше информации здесь:
+
+https://yandex.cloud/ru/docs/iam/operations/iam-token/create?utm_referrer=about%3Ablank
+
+https://yandex.cloud/ru/docs/cli/quickstart#install
+
+---
+
+### 7. Получите FolderId своей папки в YandexCloud
+
+```bash
+yc config list
+```
+
+Полученный FolderId вставьте в переменную окружения в параметрах запуска с именем FOLDER_ID
+
+---
+Больше информации здесь:
+
+https://yandex.cloud/ru/docs/iam/operations/iam-token/create?utm_referrer=about%3Ablank
+
+https://yandex.cloud/ru/docs/cli/quickstart#install
+
+---
+
+### 8. Запустите Spring Boot приложение
 После успешной сборки вы можете запустить ваше приложение с помощью команды:
+
 ```bash
 mvn spring-boot:run
 ```
+
 Не забудьте запустить Docker(Docker Daemon)
  
 Docker-контейнеры должны подтянуться и запуститься автоматически после запуска приложения.
