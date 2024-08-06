@@ -7,12 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.tinkoff.fintechlab.configuration.LanguageCode;
 import org.tinkoff.fintechlab.dto.Request;
-import org.tinkoff.fintechlab.exception.ClientException;
 import org.tinkoff.fintechlab.service.RequestService;
 
 import java.net.InetAddress;
@@ -40,8 +42,15 @@ public class TextController {
             @RequestParam("textForTranslation") String text,
             Model model,
             HttpServletRequest request
-    ) throws UnknownHostException {
+    ) throws UnknownHostException, ExecutionException, InterruptedException {
         model.addAttribute("languages", LanguageCode.values());
+
+        if (sourceLanguage.equals(targetLanguage)) {
+
+            logger.info("Исходный и целевой языки не могут быть одинаковыми");
+            return "redirect:/error";
+        }
+
         InetAddress clientIp = getClientIp(request);
 
         if (clientIp != null) {
@@ -55,18 +64,9 @@ public class TextController {
         logger.info("Текст для перевода: {}", text);
 
         String translatedText = "";
-        try {
-            translatedText = getTranslatedTextWithMultithreading(sourceLanguage, targetLanguage, text);
-        } catch (ClientException e) {
-            logger.error("Ошибка при переводе текста", e);
-            model.addAttribute("errorMessage", "Произошла ошибка при переводе текста. Пожалуйста, попробуйте позже.");
-        } catch (RuntimeException e) {
-            logger.error("Ошибка при парсинге ответа сервера");
-            model.addAttribute("errorMessage", "Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.");
-        } catch (Exception e) {
-            logger.error("Общая ошибка", e);
-            model.addAttribute("errorMessage", "Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.");
-        }
+
+        translatedText = getTranslatedTextWithMultithreading(sourceLanguage, targetLanguage, text);
+
 
         requestService.add(new Request(clientIp, text, translatedText));
         logger.info("Saved to DB");
@@ -77,7 +77,7 @@ public class TextController {
     }
 
 
-    private String getTranslatedTextWithMultithreading(String sourceLanguage, String targetLanguage, String text) throws InterruptedException, ExecutionException, ClientException {
+    private String getTranslatedTextWithMultithreading(String sourceLanguage, String targetLanguage, String text) throws InterruptedException, ExecutionException {
         CopyOnWriteArrayList<Word> ans = new CopyOnWriteArrayList<>();
         String[] words = text.split("\\s+");
 
@@ -93,6 +93,28 @@ public class TextController {
             ans.sort(Comparator.comparingInt(Word::getIdx));
         }
         return arrayListToString(ans);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public String handleClientError(
+            HttpClientErrorException
+                    exception
+    ) {
+
+        if (exception.getStatusCode().value() == 400) {
+            logger.info("http 400 текст не может быть пустым");
+        }
+        if (exception.getStatusCode().value() == 401) {
+            logger.info("http 401 не авторизирован");
+        }
+        return "redirect:/error";
+    }
+
+    @ExceptionHandler(HttpServerErrorException.class)
+    public String handleServerError(HttpServerErrorException exception) {
+        logger.info(exception.getMessage());
+
+        return "redirect:/error";
     }
 
     private InetAddress getClientIp(HttpServletRequest request) {
@@ -132,4 +154,5 @@ public class TextController {
         private String translatedWord;
         private Integer idx;
     }
+
 }
