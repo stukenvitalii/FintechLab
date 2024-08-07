@@ -29,6 +29,13 @@
     <properties>
         <java.version>21</java.version>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>FintechLab</id>
+            <url>https://github.com/stukenvitalii/FintechLab</url>
+        </repository>
+
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
