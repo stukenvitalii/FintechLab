@@ -26,7 +26,7 @@ public class RequestServiceImpl implements RequestService {
      * @throws UnknownHostException if the client's IP address cannot be determined
      */
     @Override
-    public void add(Request request) throws UnknownHostException {
+    public void add(Request request) {
         requestRepository.add(request);
     }
 }
