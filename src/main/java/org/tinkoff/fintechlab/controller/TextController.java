@@ -63,10 +63,7 @@ public class TextController {
         logger.info("Язык перевода: {}", targetLanguage);
         logger.info("Текст для перевода: {}", text);
 
-        String translatedText = "";
-
-        translatedText = getTranslatedTextWithMultithreading(sourceLanguage, targetLanguage, text);
-
+        String translatedText = getTranslatedTextWithMultithreading(sourceLanguage, targetLanguage, text);
 
         requestService.add(new Request(clientIp, text, translatedText));
         logger.info("Saved to DB");
